@@ -1,0 +1,11 @@
+<header>
+  <h1><%= title %></h1>
+  <div>
+    <% if (locals.user) { %>
+    <button><a href="/logout">Logout</a></button>
+    <% } else { %>
+    <button><a href="/login">Login</a></button>
+    <button><a href="/sign-up">Sign up</a></button>
+    <% } %>
+  </div>
+</header>

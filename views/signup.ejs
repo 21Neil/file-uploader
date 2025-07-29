@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign up</title>
+  </head>
+  <body>
+    <%- include('header') %>
+    <form action="/sign-up" method="post">
+      <div>
+        <label for="firstName">First name*</label>
+        <input
+          type="text"
+          name="firstName"
+          id="firstName"
+          value="<%= locals.firstName && firstName %>"
+          required
+        />
+      </div>
+      <div>
+        <label for="lastName">Last name*</label>
+        <input
+          type="text"
+          name="lastName"
+          id="lastName"
+          value="<%= locals.lastName && lastName %>"
+          required
+        />
+      </div>
+      <div>
+        <label for="email">Email*</label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          value="<%= locals.email && email %>"
+          required
+        />
+      </div>
+      <div>
+        <label for="password">Password*</label>
+        <input type="password" name="password" id="password" required />
+      </div>
+      <div>
+        <label for="confirmPassword">Confirm password</label>
+        <input
+          type="password"
+          name="confirmPassword"
+          id="confirmPassword"
+          required
+        />
+      </div>
+      <div>
+        <% if (locals.errors) { %> <% errors.map(err => { %>
+        <p style="color: red"><%= err.msg %></p>
+        <% }) %> <% } %>
+      </div>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+  </body>
+</html>
