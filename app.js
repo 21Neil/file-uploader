@@ -3,13 +3,14 @@ import session from 'express-session'
 import passport from 'passport'
 import 'dotenv/config'
 import { PrismaSessionStore } from '@quixo3/prisma-session-store'
-import { PrismaClient } from './generated/prisma/index.js'
 import indexRouter from './routes/indexRouter.js'
 import signupRouter from './routes/signupRouter.js'
 import loginRouter from './routes/loginRouter.js'
 import './config/passport.js'
 import prisma from './prisma/prisma.js'
 import logoutRouter from './routes/logoutRouter.js'
+import uploadRouter from './routes/uploadRouter.js'
+import authenticate from './middleware/authenticated.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -42,6 +43,7 @@ app.use('/', indexRouter)
 app.use('/sign-up', signupRouter)
 app.use('/login', loginRouter)
 app.use('/logout', logoutRouter)
+app.use('/upload', authenticate, uploadRouter)
 
 app.use((err, req, res, next) => {
   console.error(err);
