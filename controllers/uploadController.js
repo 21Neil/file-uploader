@@ -25,6 +25,7 @@ const getUploadView = (req, res) => {
 const postUpload = [
   upload.single('file'),
   async (req, res) => {
+    console.log(req.file)
     res.render('upload', {
       title: 'Upload',
       msg: 'Upload success',

@@ -14,22 +14,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
   id Int @id @default(autoincrement())
-  first_name String
-  last_name String
+  firstName String
+  lastName String
   username String @unique
   password String
+  folder Folder?
 }
 
-model session {
+model Session {
   id String @id
   sid String @unique
   data String
   expiresAt DateTime
 }
 
-model file {
+model File {
   id Int @id @default(autoincrement())
   filename String
+
+  folder Folder @relation(fields: [folderId], references: [id])
+  folderId Int @unique
+}
+
+model Folder {
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int @unique
+
+  subFolders Folder[] @relation("parentSub")
+  parentFolder Folder @relation("parentSub", fields: [parentFolderId], references: [id])
+  parentFolderId Int @unique
+
+  items File[]
 }

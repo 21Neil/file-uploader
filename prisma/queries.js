@@ -19,8 +19,8 @@ const getUserById = async id => {
 const createUser = async (firstName, lastName, email, password) => {
   return await prisma.user.create({
     data: {
-      first_name: firstName,
-      last_name: lastName,
+      firstName,
+      lastName,
       username: email,
       password,
     },
