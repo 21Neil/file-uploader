@@ -6,9 +6,16 @@
     <title>Home</title>
   </head>
   <body>
-    <%- include('header') %> <% if (locals.user) { %>
+    <%- include('header') %> <% if (currentUser) { %>
     <div>
       <button><a href="/upload">Upload</a></button>
+    </div>
+    <% } %>
+    <% if (currentFolder) { %>
+    <div>
+      <% files.map(file => { %>
+        <div><%= file.filename %></div>
+      <% }) %>
     </div>
     <% } %>
   </body>

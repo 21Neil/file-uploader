@@ -1,6 +1,7 @@
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import { createUser, getUserByUsername } from '../prisma/queries.js';
+import fs from 'fs'
 
 const alphaErr = 'must only contain letters.';
 const lengthErr = 'must be between 1 and 50 characters.';
@@ -67,7 +68,8 @@ const postSignup = [
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      await createUser(firstName, lastName, email, hashedPassword);
+      const { id } = await createUser(firstName, lastName, email, hashedPassword);
+      fs.mkdirSync('files/' + id)
 
       res.redirect('/');
     } catch (err) {

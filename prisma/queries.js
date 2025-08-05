@@ -13,6 +13,16 @@ const getUserById = async id => {
     where: {
       id,
     },
+    omit: {
+      password: true,
+    },
+    include: {
+      folder: {
+        select: {
+          id: true,
+        },
+      },
+    },
   });
 };
 
@@ -23,16 +33,40 @@ const createUser = async (firstName, lastName, email, password) => {
       lastName,
       username: email,
       password,
+      folder: {
+        create: {
+          name: 'root',
+        },
+      },
     },
   });
 };
 
-const uploadFile = async filename => {
+const uploadFile = async (filename, folderId) => {
   return await prisma.file.create({
     data: {
-      filename
-    }
-  })
+      filename,
+      folderId,
+    },
+  });
 };
 
-export { getUserByUsername, getUserById, createUser, uploadFile };
+const getFolderById = async id => {
+  return await prisma.folder.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      subFolders: true,
+      items: true,
+    },
+  });
+};
+
+export {
+  getUserByUsername,
+  getUserById,
+  createUser,
+  uploadFile,
+  getFolderById,
+};
