@@ -1,6 +1,6 @@
 import prisma from './prisma.js';
 
-const getUserByUsername = async username => {
+export const getUserByUsername = async username => {
   return await prisma.user.findUnique({
     where: {
       username,
@@ -8,7 +8,7 @@ const getUserByUsername = async username => {
   });
 };
 
-const getUserById = async id => {
+export const getUserById = async id => {
   return await prisma.user.findUnique({
     where: {
       id,
@@ -18,6 +18,9 @@ const getUserById = async id => {
     },
     include: {
       folder: {
+        where: {
+          parentFolderId: null
+        },
         select: {
           id: true,
         },
@@ -26,7 +29,7 @@ const getUserById = async id => {
   });
 };
 
-const createUser = async (firstName, lastName, email, password) => {
+export const createUser = async (firstName, lastName, email, password) => {
   return await prisma.user.create({
     data: {
       firstName,
@@ -42,7 +45,7 @@ const createUser = async (firstName, lastName, email, password) => {
   });
 };
 
-const uploadFile = async (filename, folderId) => {
+export const uploadFile = async (filename, folderId) => {
   return await prisma.file.create({
     data: {
       filename,
@@ -51,10 +54,11 @@ const uploadFile = async (filename, folderId) => {
   });
 };
 
-const getFolderById = async id => {
+export const getFolderById = async (id, userId) => {
   return await prisma.folder.findUnique({
     where: {
       id,
+      userId,
     },
     include: {
       subFolders: true,
@@ -63,10 +67,23 @@ const getFolderById = async id => {
   });
 };
 
-export {
-  getUserByUsername,
-  getUserById,
-  createUser,
-  uploadFile,
-  getFolderById,
-};
+export const createFolder = async (name, userId, parentFolderId) => {
+  return await prisma.folder.create({
+    data: {
+      name,
+      userId,
+      parentFolderId,
+    }
+  })
+}
+
+export const getFolderParentIdById = async id => {
+  return prisma.folder.findUnique({
+    where: {
+      id
+    },
+    select: {
+      parentFolderId: true
+    }
+  })
+}

@@ -12,7 +12,7 @@ import logoutRouter from './routes/logoutRouter.js'
 import uploadRouter from './routes/uploadRouter.js'
 import authenticate from './middleware/authenticated.js'
 import setUserLocals from './middleware/setUserLocals.js'
-import setFolderLocals from './middleware/setFolderLocals.js'
+import folderRouter from './routes/folderRouter.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -40,13 +40,14 @@ app.use(
 )
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(setUserLocals, setFolderLocals)
+app.use(setUserLocals)
 
 app.use('/', indexRouter)
 app.use('/sign-up', signupRouter)
 app.use('/login', loginRouter)
 app.use('/logout', logoutRouter)
 app.use('/upload', authenticate, uploadRouter)
+app.use('/folder', authenticate, folderRouter)
 
 app.use((err, req, res, next) => {
   console.error(err);

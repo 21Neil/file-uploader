@@ -15,12 +15,12 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   firstName String
   lastName  String
-  username  String  @unique
+  username  String   @unique
   password  String
-  folder    Folder?
+  folder    Folder[]
 }
 
 model Session {
@@ -42,8 +42,8 @@ model Folder {
   id   Int    @id @default(autoincrement())
   name String
 
-  user   User @relation(fields: [userId], references: [id])
-  userId Int  @unique
+  owner  User @relation(fields: [userId], references: [id])
+  userId Int
 
   subFolders     Folder[] @relation("parentSub")
   parentFolder   Folder?  @relation("parentSub", fields: [parentFolderId], references: [id])

@@ -1,17 +1,9 @@
 import multer from 'multer'
 import { uploadFile } from '../prisma/queries.js'
+import { getFolderPath } from '../lib/pathUtils.js'
+import fs from 'fs'
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'files/' + res.locals.currentFolder)
-  },
-  filename: async (req, file, cb) => {
-    const filename = Buffer.from(file.originalname, 'latin1').toString('utf8')
-    await uploadFile(filename, res.locals.currentFolder)
-    cb(null, filename)
-  }
-})
-const upload = multer({ storage })
+const upload = multer({ dest: 'files/temp/' })
 
 const getUploadView = (req, res) => {
   res.render('upload', {
@@ -21,12 +13,35 @@ const getUploadView = (req, res) => {
 
 const postUpload = [
   upload.single('file'),
-  async (req, res) => {
-    console.log(req.file)
-    res.render('upload', {
-      title: 'Upload',
-      msg: 'Upload success',
-    })
+  async (req, res, next) => {
+    const folderId = parseInt(req.body.folderId)
+    const file = req.file
+
+    if (!file) return res.status(400).send('No file uploaded.')
+    if (!folderId) {
+      fs.unlink(file.path, err => {
+        if (err) console.log(err)
+      })
+      return res.status(400).send('Folder id is missing.')
+    }
+
+    try {
+      const folderPath = await getFolderPath(folderId)
+      const filename = Buffer.from(file.originalname, 'latin1').toString('utf8')
+
+      fs.rename(file.path, `files/${folderPath}/${filename}`, err => {
+        if (err) console.log(err)
+      })
+
+      await uploadFile(filename, folderId)
+      
+    } catch (err) {
+      next(err)
+      res.status(500).send('An unexpected error occurred.')
+    }
+
+
+    res.redirect(`folder/${folderId}`)
   }
 ]
 

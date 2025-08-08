@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+  </head>
+  <body>
+    <%- include('header') %> <% if (currentUser) { %> <%- include('upload') %>
+    <%- include('addFolder') %> <% } %> <% if (locals.folders) { %>
+    <div>
+      <% folders.map(folder => { %>
+      <div>
+        <a href="/folder/<%= folder.id %>">
+          <button><%= folder.name %></button>
+        </a>
+      </div>
+      <% }) %>
+    </div>
+    <% } %> <% if (locals.files) { %>
+    <div>
+      <% files.map(file => { %>
+      <div><%= file.filename %></div>
+      <% }) %>
+    </div>
+    <% } %>
+  </body>
+</html>
