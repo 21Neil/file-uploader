@@ -19,7 +19,7 @@ export const getUserById = async id => {
     include: {
       folder: {
         where: {
-          parentFolderId: null
+          parentFolderId: null,
         },
         select: {
           id: true,
@@ -73,17 +73,28 @@ export const createFolder = async (name, userId, parentFolderId) => {
       name,
       userId,
       parentFolderId,
-    }
-  })
-}
+    },
+  });
+};
 
 export const getFolderParentIdById = async id => {
-  return prisma.folder.findUnique({
+  return await prisma.folder.findUnique({
     where: {
-      id
+      id,
     },
     select: {
-      parentFolderId: true
-    }
-  })
-}
+      parentFolderId: true,
+    },
+  });
+};
+
+export const updateFolderNameById = async (id, name) => {
+  await prisma.folder.update({
+    where: {
+      id,
+    },
+    data: {
+      name,
+    },
+  });
+};

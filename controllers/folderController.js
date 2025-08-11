@@ -1,5 +1,5 @@
 import { getFolderPath } from '../lib/pathUtils.js';
-import { createFolder, getFolderById } from '../prisma/queries.js';
+import { createFolder, getFolderById, updateFolderNameById } from '../prisma/queries.js';
 import fs from 'fs';
 
 const addFolder = async (req, res) => {
@@ -17,7 +17,7 @@ const addFolder = async (req, res) => {
   }
 
   try {
-    const newFolder = await createFolder(foldername, folderId, userId);
+    const newFolder = await createFolder(foldername, userId, folderId,);
     const folderPath = await getFolderPath(folderId);
     fs.mkdir(`files/${folderPath}/${newFolder.id}`, err => {
       if (err) console.log(err);
@@ -43,4 +43,12 @@ const getFolderView = async (req, res) => {
   });
 };
 
-export { addFolder, getFolderView };
+const renameFolder = async (req, res) => {
+  const { id, name, currentFolderId } = req.body
+
+  await updateFolderNameById(+id, name)
+
+  res.redirect(`/folder/${currentFolderId}`)
+}
+
+export { addFolder, getFolderView, renameFolder };

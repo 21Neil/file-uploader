@@ -10,10 +10,20 @@
     <%- include('addFolder') %> <% } %> <% if (locals.folders) { %>
     <div>
       <% folders.map(folder => { %>
-      <div>
-        <a href="/folder/<%= folder.id %>">
-          <button><%= folder.name %></button>
-        </a>
+      <div style="display: flex; justify-content: space-between;">
+        <div>
+          <a href="/folder/<%= folder.id %>">
+            <button><%= folder.name %></button>
+          </a>
+        </div>
+        <div>
+          <form action="/folder/update" method="post">
+            <input type="hidden" name="id" value="<%= folder.id %>">
+            <input type="hidden" name="currentFolderId" value="<%= folderId %>">
+            <input type="text" name="name" id="name">
+            <button type="submit">Rename</button>
+          </form>
+        </div>
       </div>
       <% }) %>
     </div>
