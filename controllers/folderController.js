@@ -1,5 +1,11 @@
 import { getFolderPath } from '../lib/pathUtils.js';
-import { createFolder, getFolderById, updateFolderNameById } from '../prisma/queries.js';
+import {
+  createFolder,
+  deleteFolderById,
+  deleteItemById,
+  getFolderById,
+  updateFolderNameById,
+} from '../prisma/queries.js';
 import fs from 'fs';
 
 const addFolder = async (req, res) => {
@@ -17,7 +23,7 @@ const addFolder = async (req, res) => {
   }
 
   try {
-    const newFolder = await createFolder(foldername, userId, folderId,);
+    const newFolder = await createFolder(foldername, userId, folderId);
     const folderPath = await getFolderPath(folderId);
     fs.mkdir(`files/${folderPath}/${newFolder.id}`, err => {
       if (err) console.log(err);
@@ -44,11 +50,36 @@ const getFolderView = async (req, res) => {
 };
 
 const renameFolder = async (req, res) => {
-  const { id, name, currentFolderId } = req.body
+  const { id, name, currentFolderId } = req.body;
 
-  await updateFolderNameById(+id, name)
+  await updateFolderNameById(+id, name);
 
-  res.redirect(`/folder/${currentFolderId}`)
-}
+  res.redirect(`/folder/${currentFolderId}`);
+};
 
-export { addFolder, getFolderView, renameFolder };
+const deleteFolder = async (req, res) => {
+  const { id, currentFolderId } = req.body;
+  const path = `files/${await getFolderPath(+id)}`
+  const deleteFolderRecursive = async folderId => {
+    const folder = await getFolderById(folderId);
+
+    if (folder.subFolders) {
+      folder.subFolders.forEach(async subFolder => {
+        await deleteFolderRecursive(subFolder.id);
+      });
+    }
+    if (folder.items) {
+      folder.items.forEach(async item => {
+        await deleteItemById(item.id);
+      });
+    }
+    await deleteFolderById(folder.id);
+  };
+  
+  fs.rmSync(path, { recursive: true, force: true });
+  await deleteFolderRecursive(+id);
+
+  res.redirect(`/folder/${currentFolderId}`);
+};
+
+export { addFolder, getFolderView, renameFolder, deleteFolder };

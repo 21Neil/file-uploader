@@ -98,3 +98,19 @@ export const updateFolderNameById = async (id, name) => {
     },
   });
 };
+
+export const deleteFolderById = async id => {
+  await prisma.folder.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export const deleteItemById = async id => {
+  await prisma.file.delete({
+    where: {
+      id,
+    },
+  });
+};
