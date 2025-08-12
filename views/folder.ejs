@@ -8,35 +8,10 @@
   <body>
     <%- include('header') %> <% if (currentUser) { %> <%- include('upload') %>
     <%- include('addFolder') %> <% } %> <% if (locals.folders) { %>
-    <div>
-      <% folders.map(folder => { %>
-      <div style="display: flex; justify-content: space-between;">
-        <div>
-          <a href="/folder/<%= folder.id %>">
-            <button><%= folder.name %></button>
-          </a>
-        </div>
-        <div style="display: flex;">
-          <form action="/folder/update" method="post">
-            <input type="hidden" name="id" value="<%= folder.id %>">
-            <input type="hidden" name="currentFolderId" value="<%= folderId %>">
-            <input type="text" name="name" id="name">
-            <button type="submit">Rename</button>
-          </form>
-          <form action="/folder/delete" method="post">
-            <input type="hidden" name="id" value="<%= folder.id %>">
-            <input type="hidden" name="currentFolderId" value="<%= folderId %>">
-            <button type="submit">Delete</button>
-          </form>
-        </div>
-      </div>
-      <% }) %>
-    </div>
+    <div><%- include('folderItem') %></div>
     <% } %> <% if (locals.files) { %>
     <div>
-      <% files.map(file => { %>
-      <div><%= file.filename %></div>
-      <% }) %>
+     <%- include('itemItem') %>
     </div>
     <% } %>
   </body>

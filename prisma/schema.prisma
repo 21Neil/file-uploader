@@ -31,8 +31,10 @@ model Session {
 }
 
 model File {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   filename String
+  uploadAt DateTime @default(now())
+  size     Int
 
   folder   Folder @relation(fields: [folderId], references: [id])
   folderId Int

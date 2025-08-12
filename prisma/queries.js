@@ -45,10 +45,11 @@ export const createUser = async (firstName, lastName, email, password) => {
   });
 };
 
-export const uploadFile = async (filename, folderId) => {
+export const uploadFile = async (filename, size, folderId) => {
   return await prisma.file.create({
     data: {
       filename,
+      size,
       folderId,
     },
   });
@@ -109,6 +110,14 @@ export const deleteFolderById = async id => {
 
 export const deleteItemById = async id => {
   await prisma.file.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export const getFileById = async id => {
+  return await prisma.file.findUnique({
     where: {
       id,
     },

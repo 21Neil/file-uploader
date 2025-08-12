@@ -1,0 +1,25 @@
+<% files.map(file => { %>
+<div style="display: flex; justify-content: space-between; align-items: center">
+  <div style="display: flex; gap: 1em">
+    <div><%= file.filename %></div>
+    <div>
+      <%= file.size / 1024 > 1024 ? (file.size / 1024 / 1024).toFixed(1) + 'MB'
+      : (file.size / 1024).toFixed(1) + 'KB'%>
+    </div>
+    <div>
+      <%= file.uploadAt.getFullYear() + '/' + file.uploadAt.getMonth() + '/' +
+      file.uploadAt.getDate()%>
+    </div>
+  </div>
+  <div style="display: flex">
+    <a href="/file/download/<%= file.id %>">
+      <button>Download</button>
+    </a>
+    <form action="/file/delete" method="post">
+      <input type="hidden" name="fileId" value="<%= file.id %>" />
+      <input type="hidden" name="folderId" value="<%= file.folderId %>" />
+      <button type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+<% }) %>
