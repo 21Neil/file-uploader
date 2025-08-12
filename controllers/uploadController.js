@@ -2,6 +2,7 @@ import multer from 'multer';
 import { uploadFile } from '../prisma/queries.js';
 import { getFolderPath } from '../lib/pathUtils.js';
 import fs from 'fs';
+import { uploadFileToR2 } from '../services/r2Services.js';
 
 const upload = multer({ dest: 'files/temp/' });
 
@@ -30,12 +31,27 @@ const postUpload = [
       const filename = Buffer.from(file.originalname, 'latin1').toString(
         'utf8'
       );
+      const fileContent = fs.readFileSync(file.path, err => {
+        if (err) {
+          console.log(err);
+          next(err);
+        }
+      });
 
-      fs.rename(file.path, `files/${folderPath}/${filename}`, err => {
+      // fs.rename(file.path, `files/${folderPath}/${filename}`, err => {
+      //   if (err) console.log(err);
+      // });
+
+      fs.unlink(file.path, err => {
         if (err) console.log(err);
       });
 
-      await uploadFile(filename, file.size, folderId);
+      await uploadFileToR2(
+        `${folderPath}/${filename}`,
+        fileContent,
+        file.mimetype
+      );
+      await uploadFile(filename, file.size, file.mimetype, folderId);
     } catch (err) {
       next(err);
       res.status(500).send('An unexpected error occurred.');

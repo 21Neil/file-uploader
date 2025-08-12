@@ -1,4 +1,4 @@
-import { getFolderPath } from '../lib/pathUtils.js';
+import { getFilePath, getFolderPath } from '../lib/pathUtils.js';
 import {
   createFolder,
   deleteFolderById,
@@ -6,7 +6,8 @@ import {
   getFolderById,
   updateFolderNameById,
 } from '../prisma/queries.js';
-import fs from 'fs';
+import { deleteFileFromR2 } from '../services/r2Services.js';
+// import fs from 'fs';
 
 const addFolder = async (req, res) => {
   const { foldername } = req.body;
@@ -23,11 +24,13 @@ const addFolder = async (req, res) => {
   }
 
   try {
-    const newFolder = await createFolder(foldername, userId, folderId);
-    const folderPath = await getFolderPath(folderId);
-    fs.mkdir(`files/${folderPath}/${newFolder.id}`, err => {
-      if (err) console.log(err);
-    });
+    await createFolder(foldername, userId, folderId);
+    await getFolderPath(folderId);
+    // const newFolder = await createFolder(foldername, userId, folderId);
+    // const folderPath = await getFolderPath(folderId);
+    // fs.mkdir(`files/${folderPath}/${newFolder.id}`, err => {
+    //   if (err) console.log(err);
+    // });
   } catch (err) {
     if (err.code === 'P2002') {
       res
@@ -59,24 +62,27 @@ const renameFolder = async (req, res) => {
 
 const deleteFolder = async (req, res) => {
   const { id, currentFolderId } = req.body;
-  const path = `files/${await getFolderPath(+id)}`
+  // const path = `files/${await getFolderPath(+id)}`;
   const deleteFolderRecursive = async folderId => {
     const folder = await getFolderById(folderId);
 
     if (folder.subFolders) {
-      folder.subFolders.forEach(async subFolder => {
+      for (const subFolder of folder.subFolders) {
         await deleteFolderRecursive(subFolder.id);
-      });
+      }
     }
     if (folder.items) {
-      folder.items.forEach(async item => {
+      for (const item of folder.items) {
+        const path = await getFilePath(item.id);
+
+        await deleteFileFromR2(path);
         await deleteItemById(item.id);
-      });
+      }
     }
     await deleteFolderById(folder.id);
   };
-  
-  fs.rmSync(path, { recursive: true, force: true });
+
+  // fs.rmSync(path, { recursive: true, force: true });
   await deleteFolderRecursive(+id);
 
   res.redirect(`/folder/${currentFolderId}`);

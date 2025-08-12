@@ -35,6 +35,7 @@ model File {
   filename String
   uploadAt DateTime @default(now())
   size     Int
+  mimetype String
 
   folder   Folder @relation(fields: [folderId], references: [id])
   folderId Int

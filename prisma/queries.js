@@ -45,11 +45,12 @@ export const createUser = async (firstName, lastName, email, password) => {
   });
 };
 
-export const uploadFile = async (filename, size, folderId) => {
+export const uploadFile = async (filename, size, mimetype, folderId) => {
   return await prisma.file.create({
     data: {
       filename,
       size,
+      mimetype,
       folderId,
     },
   });
