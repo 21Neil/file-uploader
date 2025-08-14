@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share</title>
+</head>
+<body>
+  <%- include('header') %>
+  <form action="/share/create" method="post">
+    <input type="hidden" name="folderId" value="<%= folderId %>">
+    <label for="duration">Duration</label>
+    <select name="duration" id="duration">
+      <option value="1">1 day</option>
+      <option value="5">5 day</option>
+      <option value="10">10 day</option>
+    </select>
+    <button type="submit">Submit</button>
+  </form>
+  <% if (locals.msg) { %>
+    <p><%= msg %></p>
+  <% } %>
+</body>
+</html>

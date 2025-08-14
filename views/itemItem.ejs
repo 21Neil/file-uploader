@@ -12,14 +12,22 @@
     </div>
   </div>
   <div style="display: flex">
-    <a href="/file/download/<%= file.id %>">
-      <button>Download</button>
-    </a>
-    <form action="/file/delete" method="post">
-      <input type="hidden" name="fileId" value="<%= file.id %>" />
-      <input type="hidden" name="folderId" value="<%= file.folderId %>" />
-      <button type="submit">Delete</button>
-    </form>
+    <% if (locals.shared) { %>
+      <a href="/share/download/<%= file.id %>">
+        <button>Download</button>
+      </a>
+    <% } else { %>
+      <a href="/file/download/<%= file.id %>">
+        <button>Download</button>
+      </a>
+    <% } %>
+    <% if (!locals.shared) { %>
+      <form action="/file/delete" method="post">
+        <input type="hidden" name="fileId" value="<%= file.id %>" />
+        <input type="hidden" name="folderId" value="<%= file.folderId %>" />
+        <button type="submit">Delete</button>
+      </form>
+    <% } %>
   </div>
 </div>
 <% }) %>

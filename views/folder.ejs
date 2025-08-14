@@ -6,13 +6,21 @@
     <title>Home</title>
   </head>
   <body>
-    <%- include('header') %> <% if (currentUser) { %> <%- include('upload') %>
-    <%- include('addFolder') %> <% } %> <% if (locals.folders) { %>
-    <div><%- include('folderItem') %></div>
-    <% } %> <% if (locals.files) { %>
-    <div>
-     <%- include('itemItem') %>
-    </div>
+    <%- include('header') %> 
+    <% if (currentUser) { %> 
+      <%- include('upload') %>
+      <%- include('addFolder') %> 
+      <div>
+        <a href="/share/create/<%= folderId %>"><button>Share</button></a>
+      </div>
+    <% } %> 
+    <% if (locals.folders) { %>
+      <div><%- include('folderItem') %></div>
+    <% } %> 
+    <% if (locals.files) { %>
+      <div>
+      <%- include('itemItem') %>
+      </div>
     <% } %>
   </body>
 </html>

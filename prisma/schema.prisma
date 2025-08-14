@@ -54,7 +54,17 @@ model Folder {
   parentFolder   Folder?  @relation("parentSub", fields: [parentFolderId], references: [id])
   parentFolderId Int?
 
+  shareLink ShareLink?
+
   items File[]
 
   @@unique([parentFolderId, name])
+}
+
+model ShareLink {
+  id        String   @id @default(uuid())
+  folder    Folder   @relation(fields: [folderId], references: [id])
+  folderId  Int      @unique
+  expiresAt DateTime
+  createAt  DateTime @default(now())
 }

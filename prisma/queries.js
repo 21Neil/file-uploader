@@ -124,3 +124,20 @@ export const getFileById = async id => {
     },
   });
 };
+
+export const createShareLink = async (folderId, expiresAt) => {
+  return await prisma.shareLink.create({
+    data: {
+      folderId,
+      expiresAt
+    }
+  })
+}
+
+export const getShareLink = async id => {
+  return await prisma.shareLink.findUnique({
+    where: {
+      id
+    }
+  })
+}

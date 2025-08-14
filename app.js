@@ -14,6 +14,7 @@ import authenticate from './middleware/authenticated.js'
 import setUserLocals from './middleware/setUserLocals.js'
 import folderRouter from './routes/folderRouter.js'
 import fileRouter from './routes/fileRouter.js'
+import shareRouter from './routes/shareRouter.js'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -49,7 +50,8 @@ app.use('/login', loginRouter)
 app.use('/logout', logoutRouter)
 app.use('/upload', authenticate, uploadRouter)
 app.use('/folder', authenticate, folderRouter)
-app.use('/file', fileRouter)
+app.use('/file', authenticate, fileRouter)
+app.use('/share', shareRouter)
 
 app.use((err, req, res, next) => {
   console.error(err);
